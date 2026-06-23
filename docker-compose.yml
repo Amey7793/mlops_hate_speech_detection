@@ -1,0 +1,43 @@
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  mlflow:
+    build: .
+    image: hate-speech-mlops:latest
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////app/mlflow.db --default-artifact-root /app/mlruns
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./mlflow.db:/app/mlflow.db
+    networks:
+      - app-network
+
+  flask-api:
+    image: hate-speech-mlops:latest
+    command: python app.py
+    ports:
+      - "8000:8000"
+    environment:
+      - USE_PKL=true
+    depends_on:
+      - mlflow
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./models:/app/models
+    networks:
+      - app-network
+
+  streamlit:
+    image: hate-speech-mlops:latest
+    command: streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - FLASK_API_URL=http://host.docker.internal:8000/predict
+    depends_on:
+      - flask-api
+    networks:
+      - app-network

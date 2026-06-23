@@ -1,0 +1,24 @@
+artifact_path: file:C:/Users/amey.nagvekar/Desktop/hate-speech-mlops/mlruns/1/models/m-09f3dd4a15b74381b012d7a443ec448a/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.13.14
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types:
+    - scipy.sparse._csr.csr_matrix
+mlflow_version: 3.14.0
+model_id: m-09f3dd4a15b74381b012d7a443ec448a
+model_size_bytes: 83588795
+model_uuid: m-09f3dd4a15b74381b012d7a443ec448a
+prompts: null
+run_id: 564b75641c6d4fb9b87aa21bba1c28d5
+utc_time_created: '2026-06-23 05:49:54.436775'

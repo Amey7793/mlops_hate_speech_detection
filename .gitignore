@@ -1,0 +1,21 @@
+# Data
+data/raw/
+data/processed/
+
+# Models
+models/*.pkl
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Env
+.env
+
+# DVC
+/data/raw/*.dvc
