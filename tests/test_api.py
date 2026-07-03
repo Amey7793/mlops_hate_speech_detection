@@ -3,9 +3,26 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pytest
-import pickle
 from unittest.mock import MagicMock, patch
+import app as app_module
 from app import app
+
+
+@pytest.fixture(autouse=True)
+def mock_models():
+    """Inject fake vectorizer and model so no real files or MLflow needed."""
+    fake_vectorizer = MagicMock()
+    fake_vectorizer.transform.return_value = [[0.1, 0.2, 0.3]]
+
+    fake_model = MagicMock()
+    fake_model.predict.return_value = [0]
+    fake_model.predict_proba.return_value = [[0.2, 0.8]]
+
+    app_module.vectorizer = fake_vectorizer
+    app_module.rf_model = fake_model
+    yield
+    app_module.vectorizer = None
+    app_module.rf_model = None
 
 
 @pytest.fixture
@@ -22,7 +39,7 @@ def test_health_returns_200(client):
     assert response.status_code == 200
 
 def test_health_returns_ok(client):
-    data = response = client.get("/health").get_json()
+    data = client.get("/health").get_json()
     assert data["status"] == "ok"
 
 

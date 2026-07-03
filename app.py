@@ -26,20 +26,26 @@ confidence_histogram = Histogram(
     buckets=[0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 )
 
-if os.getenv("USE_PKL", "false").lower() == "true":
-    with open(config.VECTORIZER_PATH, "rb") as f:
-        vectorizer = pickle.load(f)
-    with open(config.RF_MODEL_PATH, "rb") as f:
-        rf_model = pickle.load(f)
-else:
-    client = mlflow.MlflowClient()
-    rf_version = client.get_registered_model("rf_model").latest_versions[0]
-    rf_model = mlflow.sklearn.load_model("models:/rf_model/latest")
-    vectorizer_path = mlflow.artifacts.download_artifacts(
-        run_id=rf_version.run_id, artifact_path="tfidf_vectorizer.pkl"
-    )
-    with open(vectorizer_path, "rb") as f:
-        vectorizer = pickle.load(f)
+vectorizer = None
+rf_model = None
+
+
+def load_models():
+    global vectorizer, rf_model
+    if os.getenv("USE_PKL", "false").lower() == "true":
+        with open(config.VECTORIZER_PATH, "rb") as f:
+            vectorizer = pickle.load(f)
+        with open(config.RF_MODEL_PATH, "rb") as f:
+            rf_model = pickle.load(f)
+    else:
+        client = mlflow.MlflowClient()
+        rf_version = client.get_registered_model("rf_model").latest_versions[0]
+        rf_model = mlflow.sklearn.load_model("models:/rf_model/latest")
+        vectorizer_path = mlflow.artifacts.download_artifacts(
+            run_id=rf_version.run_id, artifact_path="tfidf_vectorizer.pkl"
+        )
+        with open(vectorizer_path, "rb") as f:
+            vectorizer = pickle.load(f)
 
 
 @app.route("/health", methods=["GET"])
@@ -66,4 +72,5 @@ def predict_endpoint():
 
 
 if __name__ == "__main__":
+    load_models()
     app.run(host="0.0.0.0", port=8000, debug=False)
