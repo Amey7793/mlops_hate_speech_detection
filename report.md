@@ -12,7 +12,8 @@ This project implements an end-to-end MLOps pipeline for detecting hate speech i
 hate-speech-mlops/
 ├── data/
 │   └── raw/
-│       └── labeled_data.csv
+│       ├── labeled_data.csv
+│       └── labeled_data.csv.dvc
 ├── models/
 │   ├── tfidf_vectorizer.pkl
 │   ├── svm_model.pkl
@@ -23,12 +24,24 @@ hate-speech-mlops/
 │   ├── preprocessing.py
 │   ├── train.py
 │   └── predict.py
+├── tests/
+│   └── test_preprocessing.py
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── .dvc/
+│   └── config
 ├── mlruns/
 ├── app.py
 ├── streamlit_app.py
+├── monitoring.py
+├── prometheus.yml
+├── grafana_dashboard.json
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
+├── .gitignore
+├── .dvcignore
 └── mlflow.db
 ```
 

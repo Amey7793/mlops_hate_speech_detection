@@ -1,0 +1,97 @@
+{
+  "title": "Hate Speech Detection - Monitoring Dashboard",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Total Predictions",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "sum(flask_http_request_total{endpoint=\"/predict\"})",
+          "legendFormat": "Total Requests"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Hate Speech Count",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "sum(hate_speech_predictions_total{label=\"Hate Speech\"})",
+          "legendFormat": "Hate Speech"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Not Hate Speech Count",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "sum(hate_speech_predictions_total{label=\"Not Hate Speech\"})",
+          "legendFormat": "Not Hate Speech"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Avg Confidence Score",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "prediction_confidence_sum / prediction_confidence_count",
+          "legendFormat": "Avg Confidence"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Predictions Over Time",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(hate_speech_predictions_total[1m])",
+          "legendFormat": "{{label}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "API Response Time",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(flask_http_request_duration_seconds_sum[1m]) / rate(flask_http_request_duration_seconds_count[1m])",
+          "legendFormat": "Avg Response Time"
+        }
+      ]
+    },
+    {
+      "type": "bargauge",
+      "title": "Confidence Score Distribution",
+      "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "prediction_confidence_bucket",
+          "legendFormat": "le={{le}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Total API Requests",
+      "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(flask_http_request_total[1m])",
+          "legendFormat": "{{endpoint}}"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-30m", "to": "now" }
+}
